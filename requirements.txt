@@ -1,0 +1,8 @@
+numpy
+Flask==0.9
+gensim==0.10.0rc1
+nltk
+scikit-learn
+textblob==0.8.4
+PyYAML==3.11
+scipy
