@@ -8,3 +8,7 @@ PyYAML==3.11
 scipy
 pillow
 pytesseract
+opencv-python
+googletrans
+goslate
+SpeechRecognition
