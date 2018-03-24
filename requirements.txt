@@ -6,9 +6,14 @@ scikit-learn
 textblob==0.8.4
 PyYAML==3.11
 scipy
+facebook-sdk
+xlrd
+xlwt
+
 pillow
 pytesseract
 opencv-python
 googletrans
 goslate
 SpeechRecognition
+
