@@ -30,7 +30,7 @@ def data_collection():
             i: id (post_id)                     #
             j:         k: 
             l: link                             #
-            m: message,message_tags             #
+            m: message             #
             n: name                             #
             o: 
             p: place                            #
@@ -41,7 +41,7 @@ def data_collection():
             u: updated_time                     #
             v:         w:         x:         y:         z:
         '''
-        columns = ['post_id', 'name', 'message', 'message_tags', 'caption', 'description', 'story', 'comments',
+        columns = ['post_id', 'name', 'message', 'caption', 'description', 'story', 'comments',
                    'like', 'love', 'haha', 'wow', 'sad', 'angry', 'full_picture', 'place', 'type', 'source', 'link',
                    'timeline_visibility', 'created_time', 'updated_time']
         for index, col_header in enumerate(columns):
@@ -72,7 +72,7 @@ def data_collection():
             single_post_id = page_newsfeed_data[p]['id']
             # print()
             # pprint(single_post_id)
-            single_post = graph.get_object(id=single_post_id, fields='id, name, message, message_tags, caption, description,\
+            single_post = graph.get_object(id=single_post_id, fields='id, name, message, caption, description,\
                                                         story, comments,\
                                                         reactions.type(LIKE).limit(0).summary(1).as(like),\
                                                         reactions.type(LOVE).limit(0).summary(1).as(love),\
@@ -82,7 +82,7 @@ def data_collection():
                                                         reactions.type(ANGRY).limit(0).summary(1).as(angry),\
                                                         full_picture, place, type, source, link,\
                                                         timeline_visibility, created_time, updated_time')
-            pprint(single_post)
+            # pprint(single_post)
             # print(single_post.keys())
             # print('hi')
 
@@ -107,7 +107,11 @@ def data_collection():
                     value = single_post[col_header]
 
                 # print(col_header, value)
-                row.write(index, value)
+                try:
+                    row.write(index, value)
+                except Exception as e:
+                    pprint(single_post)
+                    print(e)
             #     print('hi2')
             # print('hi3')
 
