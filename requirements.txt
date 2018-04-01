@@ -7,6 +7,7 @@ textblob==0.8.4
 PyYAML==3.11
 scipy
 facebook-sdk
+requests
 xlrd
 xlwt
 
