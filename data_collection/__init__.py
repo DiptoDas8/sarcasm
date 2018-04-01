@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 import facebook
+import requests
 import xlwt
 from pprint import pprint
 
@@ -10,7 +11,7 @@ def data_collection():
 
     '''get a valid token, try to get a longer lasting one'''
     graph = facebook.GraphAPI(
-        access_token="EAACEdEose0cBAJisENplwbIdhxkjt1jdHq57xHu6oYZCmf28lYmED15ZAHl7NDtWNs76nZCxq3KZBpBIYxw35AR10qZCSLinByZA728LAET7CpqByYzoj3CvWqtZBepF4NaX0cI310gwZALMzPMVPQoS8mjNtYnT2GkSr1Fcy6dQmvsUAJYxaMoHjovbmBKhKeeBHWVJY6TPCbXCxj9kBpPK",
+        access_token="EAACEdEose0cBAA7ZArUZA3XgTsHrnj3foZAVZAk8Oi7WpGwLkSoqmlqkgODDn7b0Do5k66UrpZBGFb1AWPFTIZAVarZBV7cUV73Q5O3DtyQdlfuKAEDRwclvDU4UukeiASvmseYLmt6Dram9idgKgilI54kXI6X5td2xXCnBhg8tf89PbMZB5asmdhP4I9iYZAJj1VB4weAZA6W5b5ZAjmEN324",
         version="2.7")
 
     '''create an excel file and allot one sheet for each page'''
@@ -48,10 +49,25 @@ def data_collection():
         page = graph.get_object(id=page_name)
 
         single_page_id = page['id']
-        page_newsfeed = graph.get_object(id=single_page_id, fields='feed')
-        page_newsfeed_data = page_newsfeed['feed']['data']
+        big_page_newsfeed = {'data':[]}
+        # page_newsfeed = graph.get_object(id=single_page_id, fields='feed')
+        page_newsfeed = graph.get_connections(single_page_id, 'feed')
+        while(True):
+            try:
+                # pprint(page_newsfeed)
+                big_page_newsfeed['data'] = big_page_newsfeed['data'] + page_newsfeed['data']
+                # Attempt to make a request to the next page of data, if it exists.
+                page_newsfeed = requests.get(page_newsfeed['paging']['next']).json()
+            except KeyError:
+                # When there are no more pages (['paging']['next']), break from the
+                # loop and end the script.
+                break
+        # pprint (big_page_newsfeed)
+
+        page_newsfeed_data = big_page_newsfeed['data']
+        # page_newsfeed_data = page_newsfeed['feed']['data']
         # pprint(page_newsfeed_data)
-        for p in range(len(page_newsfeed_data)):
+        for p in range(len(page_newsfeed_data)):   #
             '''len(page_newsfeed_data)'''
             single_post_id = page_newsfeed_data[p]['id']
             # print()
@@ -66,8 +82,9 @@ def data_collection():
                                                         reactions.type(ANGRY).limit(0).summary(1).as(angry),\
                                                         full_picture, place, type, source, link,\
                                                         timeline_visibility, created_time, updated_time')
-            # pprint(single_post)
+            pprint(single_post)
             # print(single_post.keys())
+            # print('hi')
 
             '''create row for each post'''
             row = sheet.row(p + 1)
@@ -91,6 +108,8 @@ def data_collection():
 
                 # print(col_header, value)
                 row.write(index, value)
+            #     print('hi2')
+            # print('hi3')
 
     book.save("book.xls")
 
